@@ -2,5 +2,4 @@
 
 public interface IPorte
 {
-    void Ouvrir();
 }

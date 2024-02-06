@@ -2,10 +2,5 @@
 
 internal class PorteSpy : IPorte
 {
-    public bool AReçuUnSignalDOuverture { get; private set; }
-
-    public void Ouvrir()
-    {
-        AReçuUnSignalDOuverture = true;
-    }
+    public bool SignalOuvertureReçu { get; }
 }
