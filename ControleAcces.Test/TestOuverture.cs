@@ -8,13 +8,33 @@ public class TestOuverture
     public void CasNominal()
     {
         // ETANT DONNE un Lecteur reliée à une Porte
-        // ET un Moteur d'Ouverture interrogeant ce Lecteur
+        // ET qu'un badge a été detecté
         var porte = new PorteSpy();
         var lecteur = new LecteurFake(porte);
         var moteurOuverture = new MoteurOuverture(lecteur);
+        lecteur.SimulerDétectionBadge(Badge.NonBloqué);
 
-        // QUAND un Badge valide est passé devant le Lecteur
-        lecteur.SimulerDétectionBadge();
+        // QUAND le Moteur d'Ouverture interroge ses lecteurs
+        moteurOuverture.InterrogerLecteurs();
+
+        // ALORS un signal d'ouverture est envoyé à la Porte
+        Assert.True(porte.AReçuUnSignalDOuverture);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    public void CasDeuxLecteurs(int indexLecteurDétectantLeBadge)
+    {
+        // ETANT DONNE deux Lecteurs reliés à une Porte
+        // ET qu'un badge a été detecté par l'un des deux
+        var porte = new PorteSpy();
+        var lecteurs = new[] { new LecteurFake(porte), new LecteurFake(porte)};
+        var moteurOuverture = new MoteurOuverture(lecteurs.Cast<ILecteur>().ToArray());
+
+        lecteurs[indexLecteurDétectantLeBadge].SimulerDétectionBadge(Badge.NonBloqué);
+
+        // QUAND le Moteur d'Ouverture interroge ses lecteurs
         moteurOuverture.InterrogerLecteurs();
 
         // ALORS un signal d'ouverture est envoyé à la Porte
@@ -25,12 +45,11 @@ public class TestOuverture
     public void CasRienDétecté()
     {
         // ETANT DONNE un Lecteur reliée à une Porte
-        // ET un Moteur d'Ouverture interrogeant ce Lecteur
         var porte = new PorteSpy();
         var lecteur = new LecteurFake(porte);
         var moteurOuverture = new MoteurOuverture(lecteur);
 
-        // QUAND aucun Badge valide n'est passé devant le Lecteur
+        // QUAND le Moteur d'Ouverture interroge ses lecteurs
         moteurOuverture.InterrogerLecteurs();
 
         // ALORS aucun signal d'ouverture n'est envoyé à la Porte
@@ -46,7 +65,7 @@ public class TestOuverture
         var loggerSpy = new LoggerSpy();
         var moteurOuverture = new MoteurOuverture(lecteur) { Logger = loggerSpy };
 
-        // QUAND on interroge ce Lecteur
+        // QUAND le Moteur d'Ouverture interroge ses lecteurs
         moteurOuverture.InterrogerLecteurs();
 
         // ALORS aucun signal d'ouverture n'est envoyé à la Porte
@@ -54,5 +73,25 @@ public class TestOuverture
 
         // ET l'erreur est loguée
         Assert.True(loggerSpy.ExceptionDansLesLogs);
+    }
+
+    [Fact]
+    public void CasBadgeBloquée()
+    {
+        // ETANT DONNE un Lecteur reliée à une Porte
+        // ET une Badge bloqué
+        // ET que ce Badge a été détecté
+        var porte = new PorteSpy();
+        var badge = Badge.Bloqué;
+        var lecteur = new LecteurFake(porte);
+        var moteurOuverture = new MoteurOuverture(lecteur);
+
+        lecteur.SimulerDétectionBadge(badge);
+
+        // QUAND le Moteur d'Ouverture interroge ses lecteurs
+        moteurOuverture.InterrogerLecteurs();
+
+        // ALORS aucun signal d'ouverture n'est envoyé à la Porte
+        Assert.False(porte.AReçuUnSignalDOuverture);
     }
 }

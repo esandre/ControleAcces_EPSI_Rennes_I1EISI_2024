@@ -3,5 +3,5 @@
 public interface ILecteur
 {
     IPorte Porte { get; }
-    bool BadgeDétecté { get; }
+    Badge? BadgeDétecté { get; }
 }

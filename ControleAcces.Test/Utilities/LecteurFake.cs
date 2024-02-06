@@ -7,24 +7,22 @@ internal class LecteurFake : ILecteur
         Porte = porte;
     }
 
-    public void SimulerDétectionBadge()
+    public void SimulerDétectionBadge(Badge badge)
     {
-        _badgeDétectéAuProchainCycle = true;
+        _badgeDétectéAuProchainCycle = badge;
     }
 
-    private bool _badgeDétectéAuProchainCycle;
+    private Badge? _badgeDétectéAuProchainCycle;
 
     public IPorte Porte { get; }
 
-    public bool BadgeDétecté
+    public Badge? BadgeDétecté
     {
         get
         {
-            if (!_badgeDétectéAuProchainCycle) 
-                return false;
-
-            _badgeDétectéAuProchainCycle = false;
-            return true;
+            var valeur = _badgeDétectéAuProchainCycle;
+            _badgeDétectéAuProchainCycle = null;
+            return valeur;
         }
     }
 }

@@ -2,26 +2,35 @@
 
 public class MoteurOuverture
 {
-    private readonly ILecteur _lecteurAPoller;
+    private readonly ILecteur[] _lecteursAPoller;
 
-    public MoteurOuverture(ILecteur lecteurAPoller)
+    public MoteurOuverture(params ILecteur[] lecteurAPoller)
     {
-        _lecteurAPoller = lecteurAPoller;
+        _lecteursAPoller = lecteurAPoller;
     }
 
     public IMoteurOuvertureLogger? Logger { private get; init; }
 
     public void InterrogerLecteurs()
     {
-        try
+        foreach (var lecteur in _lecteursAPoller)
         {
-            if (_lecteurAPoller.BadgeDétecté)
-                _lecteurAPoller.Porte.Ouvrir();
+            try
+            {
+                var badgeDetecté = lecteur.BadgeDétecté;
+
+                if (badgeDetecté == null)
+                    continue;
+
+                if (badgeDetecté.EstBloqué)
+                    continue;
+
+                lecteur.Porte.Ouvrir();
+            }
+            catch (Exception e)
+            {
+                Logger?.LogException(e);
+            }
         }
-        catch (Exception e)
-        {
-            Logger?.LogException(e);
-        }
-        
     }
 }
