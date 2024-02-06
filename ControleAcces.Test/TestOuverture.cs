@@ -13,7 +13,7 @@ public class TestOuverture
         lecteur.SimulerDétectionBadge();
 
         // ET un Moteur d'Ouverture
-        var moteur = new MoteurOuverture();
+        var moteur = new MoteurOuverture(porteSpy);
 
         // QUAND le Moteur d'Ouverture interroge le Lecteur
         moteur.InterrogerLecteur();
