@@ -13,7 +13,7 @@ public class TestOuverture
         lecteur.SimulerDétectionBadge();
 
         // ET un Moteur d'Ouverture
-        var moteur = new MoteurOuverture(porteSpy);
+        var moteur = new MoteurOuverture(lecteur);
 
         // QUAND le Moteur d'Ouverture interroge le Lecteur
         moteur.InterrogerLecteur();
@@ -22,4 +22,18 @@ public class TestOuverture
         Assert.True(porteSpy.SignalOuvertureReçu);
     }
 
+    [Fact]
+    public void CasMoteurNonInterrogé()
+    {
+        // ETANT DONNE un Lecteur ayant détecté un Badge relié à une Porte
+        var porteSpy = new PorteSpy();
+        var lecteur = new LecteurFake(porteSpy);
+        lecteur.SimulerDétectionBadge();
+
+        // ET un Moteur d'Ouverture
+        var moteur = new MoteurOuverture(lecteur);
+
+        // ALORS aucun signal d'ouverture n'est envoyé à la Porte
+        Assert.False(porteSpy.SignalOuvertureReçu);
+    }
 }
