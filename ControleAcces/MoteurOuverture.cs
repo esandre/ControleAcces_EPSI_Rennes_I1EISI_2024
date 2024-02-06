@@ -11,6 +11,7 @@ public class MoteurOuverture
 
     public void InterrogerLecteur()
     {
-        _lecteur.OuvrirPorte();
+        if(_lecteur.ADétectéBadge)
+            _lecteur.OuvrirPorte();
     }
 }

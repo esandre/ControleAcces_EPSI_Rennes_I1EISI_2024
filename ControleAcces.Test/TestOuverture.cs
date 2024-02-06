@@ -36,4 +36,21 @@ public class TestOuverture
         // ALORS aucun signal d'ouverture n'est envoyé à la Porte
         Assert.False(porteSpy.SignalOuvertureReçu);
     }
+
+    [Fact]
+    public void CasLecteurNonInterrogé()
+    {
+        // ETANT DONNE un Lecteur relié à une Porte
+        var porteSpy = new PorteSpy();
+        var lecteur = new LecteurFake(porteSpy);
+
+        // ET un Moteur d'Ouverture
+        var moteur = new MoteurOuverture(lecteur);
+
+        // QUAND le Moteur d'Ouverture interroge le Lecteur
+        moteur.InterrogerLecteur();
+
+        // ALORS aucun signal d'ouverture n'est envoyé à la Porte
+        Assert.False(porteSpy.SignalOuvertureReçu);
+    }
 }

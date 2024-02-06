@@ -11,10 +11,13 @@ public class LecteurFake : ILecteur
 
     public void SimulerDétectionBadge()
     {
+        ADétectéBadge = true;
     }
 
     public void OuvrirPorte()
     {
         _porte.Ouvrir();
     }
+
+    public bool ADétectéBadge { get; private set; }
 }
